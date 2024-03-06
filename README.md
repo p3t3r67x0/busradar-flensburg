@@ -8,9 +8,16 @@ bla weil ichs kann bla
 Install system dependencies and clone repository
 
 ```
-sudo apt install git git-lfs virtualenv python3 python3-pip postgresql-16 postgis3
+sudo apt install git git-lfs python3 python3-pip python3-venv postgresql-16 postgis3
 git clone https://github.com/p3t3r67x0/busradar-flensburg.git
+cd busradar-flensburg
+python3 -m venv venv
+source venv/bin/activate
+pip3 install -r requirements.txt
 ```
+
+
+## Database
 
 Insert and run SQL statements. Make sure to replace the values with your own ones
 
@@ -18,6 +25,8 @@ Insert and run SQL statements. Make sure to replace the values with your own one
 sudo -i -Hu postgres psql -U postgres -h localhost -d postgres -p 5434 < busradar-schema.sql
 ```
 
+
+## Enviroment
 
 Create dot `.env` file inside root directory. Make sure to add the following content repaced by your actual values
 
