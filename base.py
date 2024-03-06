@@ -13,11 +13,13 @@ def get_settings():
     return config.Settings()
 
 
-host = get_settings().host
+url_base = get_settings().url_base
+url_detail = get_settings().url_detail
 username = get_settings().username
 password = get_settings().password
 database = get_settings().database
 port = get_settings().port
+host = get_settings().host
 
 
 DATABASE_URL = f'postgresql+asyncpg://{username}:{password}@{host}:{port}/{database}'

@@ -2,8 +2,6 @@ from sqlalchemy import select
 from sqlalchemy.sql import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from query import request_cookie, request_data
-
 
 async def get_led(session: AsyncSession, lat: float, lon: float):
     stmt = text('''

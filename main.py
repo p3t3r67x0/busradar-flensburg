@@ -3,16 +3,27 @@ from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.staticfiles import StaticFiles
 from fastapi.encoders import jsonable_encoder
+from contextlib import asynccontextmanager
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session
 from typing import List
 
+from query import get_details
+
 import base
 import service
+import httpx
 
 
-app = FastAPI(docs_url=None, redoc_url=None, version='0.0.1', title='Busradar API', summary='tbd.')
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    app.requests_client = httpx.AsyncClient()
+    yield
+    await app.requests_client.aclose()
+
+
+app = FastAPI(docs_url=None, redoc_url=None, version='0.0.1', title='Busradar API', summary='tbd.', lifespan=lifespan)
 Base = declarative_base()
 
 router = APIRouter(prefix='/busradar/v1')
@@ -47,11 +58,18 @@ async def swagger_ui_html(req: Request) -> HTMLResponse:
     )
 
 
-@router.get('/details', response_model=list, tags=['Busradar'])
-async def get_led(lat: float, lon: float, session: AsyncSession = Depends(get_session)):
-    rows = await service.get_led(session, lat, lon)
-    details = jsonable_encoder(rows)
-    output = {'led': details[0], 'color': '#341a17'}
+
+@router.get('/details', tags=['Busradar'])
+async def get_led(request: Request, session: AsyncSession = Depends(get_session)):
+    client = request.app.requests_client
+    response = await get_details(client)
+
+    output = []
+
+    for res in response:
+        rows = await service.get_led(session, float(res['lat']), float(res['lon']))
+        led = jsonable_encoder(rows)
+        output.append({'led': led[0], 'color': '#341a17'})
 
     return JSONResponse(content=output)
 

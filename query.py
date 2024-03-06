@@ -1,18 +1,21 @@
 from fake_useragent import UserAgent
 from urllib.parse import urlparse
-from httpx import AsyncClient
 
-#from main import app
+import base
+import httpx
+
 
 ua = UserAgent()
+cookies = httpx.Cookies()
+url_base = base.get_settings().url_base
+url_detail = base.get_settings().url_detail
 
 
-async def request_cookie(url_base):
-    async with AsyncClient(app=app) as ac:
-        r = ac.get(url_base, timeout=20)
+async def request_cookie(client, url_base):
+    r = await client.get(url_base, timeout=20)
 
-        if r.status_code == 200:
-            cookie = r.headers['set-cookie'].split(';')
+    if 'set-cookie' in r.headers:
+        cookie = r.headers['set-cookie'].split(';')
 
         if len(cookie) >= 0:
             sec_id = cookie[0].split('=')[1]
@@ -20,15 +23,25 @@ async def request_cookie(url_base):
             return sec_id
 
 
-async def request_data(url_base, url_detail, cookie):
+async def request_json(client, url_base, url_detail, cookie):
     domain = urlparse(url_base).netloc
 
-    cookies = httpx.Cookies()
     cookies.set('secId', cookie, domain=domain)
-
     headers = {'user-agent': ua.random, 'referer': url_base}
 
-    async with AsyncClient(app=app) as ac:
-        r = ac.get(url_detail, headers=headers, cookies=cookies)
+    r = await client.get(url_detail, headers=headers, cookies=cookies)
 
-        return r.json()
+    return r.json()
+
+
+async def get_details(client):
+    cookie = cookies.get('secId')
+
+    if cookies.get('secId') is None:
+        cookie = await request_cookie(client, url_base)
+
+    details = await request_json(client, url_base, url_detail, cookie)
+
+    result = [{'lat': d['lat'], 'lon': d['lon']} for d in details['result'] if d['line'] == 7]
+
+    return result
