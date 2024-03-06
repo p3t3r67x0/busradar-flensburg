@@ -7,8 +7,8 @@ import httpx
 
 ua = UserAgent()
 cookies = httpx.Cookies()
-url_base = base.get_settings().url_base
-url_detail = base.get_settings().url_detail
+url_base = base.url_base
+url_detail = base.url_detail
 
 
 async def request_cookie(client, url_base):
@@ -34,7 +34,7 @@ async def request_json(client, url_base, url_detail, cookie):
     return r.json()
 
 
-async def get_details(client):
+async def get_details(client, bus_line):
     cookie = cookies.get('secId')
 
     if cookies.get('secId') is None:
@@ -42,6 +42,6 @@ async def get_details(client):
 
     details = await request_json(client, url_base, url_detail, cookie)
 
-    result = [{'lat': d['lat'], 'lon': d['lon']} for d in details['result'] if d['line'] == 7]
+    result = [{'lat': d['lat'], 'lon': d['lon']} for d in details['result'] if d['line'] == bus_line]
 
     return result
