@@ -34,7 +34,7 @@ async def request_json(client, url_base, url_detail, cookie):
     return r.json()
 
 
-async def get_details(client, bus_line):
+async def get_details(client, bus_lines):
     cookie = cookies.get('secId')
 
     if cookies.get('secId') is None:
@@ -42,6 +42,6 @@ async def get_details(client, bus_line):
 
     details = await request_json(client, url_base, url_detail, cookie)
 
-    result = [{'lat': d['lat'], 'lon': d['lon']} for d in details['result'] if d['line'] == bus_line]
+    result = [{'lat': d['lat'], 'lon': d['lon'], 'bus': d['line']} for d in details['result'] if d['line'] in bus_lines]
 
     return result
