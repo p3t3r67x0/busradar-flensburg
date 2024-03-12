@@ -69,7 +69,14 @@ async def get_led(request: Request, session: AsyncSession = Depends(get_session)
     for res in response:
         rows = await service.get_led(session, float(res['lat']), float(res['lon']))
         led = jsonable_encoder(rows)
-        output.append({'led': led[0], 'color': base.line_7, 'line': res['bus']})
+        line = res['bus']
+
+        if line == 1:
+            color =  base.line_1
+        elif line == 1:
+            color =  base.line_7
+
+        output.append({'led': led[0], 'color': color, 'line': line})
 
     return JSONResponse(content=output)
 
