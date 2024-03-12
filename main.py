@@ -73,7 +73,7 @@ async def get_led(request: Request, session: AsyncSession = Depends(get_session)
 
         if line == 1:
             color =  base.line_1
-        elif line == 1:
+        elif line == 7:
             color =  base.line_7
 
         output.append({'led': led[0], 'color': color, 'line': line})
