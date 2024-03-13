@@ -62,7 +62,7 @@ async def swagger_ui_html(req: Request) -> HTMLResponse:
 @router.get('/details', tags=['Busradar'])
 async def get_led(request: Request, session: AsyncSession = Depends(get_session)):
     client = request.app.requests_client
-    response = await get_details(client, [1, 7])
+    response = await get_details(client, ['1', '7'])
 
     output = []
 
@@ -70,13 +70,9 @@ async def get_led(request: Request, session: AsyncSession = Depends(get_session)
         rows = await service.get_led(session, float(res['lat']), float(res['lon']))
         led = jsonable_encoder(rows)
         line = res['bus']
+        color = [l['color'] for l in base.lines if l['line'] in str(line)]
 
-        if line == 1:
-            color =  base.line_1
-        elif line == 7:
-            color =  base.line_7
-
-        output.append({'led': led[0], 'color': color, 'line': line})
+        output.append({'led': led[0], 'color': color[0], 'line': line})
 
     return JSONResponse(content=output)
 

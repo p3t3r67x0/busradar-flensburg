@@ -42,6 +42,6 @@ async def get_details(client, bus_lines):
 
     details = await request_json(client, url_base, url_detail, cookie)
 
-    result = [{'lat': d['lat'], 'lon': d['lon'], 'bus': d['line']} for d in details['result'] if d['line'] in bus_lines]
+    result = [{'lat': d['lat'], 'lon': d['lon'], 'bus': d['line']} for d in details['result'] if str(d['line']) in bus_lines]
 
     return result

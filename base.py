@@ -13,17 +13,58 @@ def get_settings():
     return config.Settings()
 
 
-line_1 = get_settings().line_1
-line_2 = get_settings().line_2
-line_3 = get_settings().line_3
-line_4 = get_settings().line_4
-line_5 = get_settings().line_5
-line_7 = get_settings().line_7
-line_8 = get_settings().line_8
-line_10 = get_settings().line_10
-line_11 = get_settings().line_11
-line_12 = get_settings().line_12
-line_14 = get_settings().line_14
+lines = [{
+    'line': '1',
+    'color': get_settings().line_1
+},
+{
+    'line': '2',
+    'color': get_settings().line_2
+},
+{
+    'line': '3',
+    'color': get_settings().line_3
+},
+{
+    'line': '4',
+    'color': get_settings().line_4
+},
+{
+    'line': '5a',
+    'color': get_settings().line_5a
+},
+{
+    'line': '5b',
+    'color': get_settings().line_5b
+},
+{
+    'line': '7',
+    'color': get_settings().line_7
+},
+{
+    'line': '8a',
+    'color': get_settings().line_8a
+},
+{
+    'line': '8b',
+    'color': get_settings().line_8b
+},
+{
+    'line': '10',
+    'color': get_settings().line_10
+},
+{
+    'line': '11',
+    'color': get_settings().line_11
+},
+{
+    'line': '12',
+    'color': get_settings().line_12
+},
+{
+    'line': '14',
+    'color': get_settings().line_14
+}]
 
 url_base = get_settings().url_base
 url_detail = get_settings().url_detail
