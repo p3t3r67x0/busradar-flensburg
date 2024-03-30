@@ -60,10 +60,43 @@ DB_PORT=5432
 Install Postgres and Postgis plugin and python dependencies
 
 
-## Run
+## Development
 
 ```
 uvicorn main:app --reload
+```
+
+## Service
+
+```
+[Unit]
+Description=API instance for Busradar Flensburg
+After=network.target
+Requires=postgresql.service
+
+[Service]
+Type=simple
+User=c3fl
+Group=c3fl
+DynamicUser=true
+
+WorkingDirectory=/home/c3fl/busrader-flensburg
+PrivateTmp=true
+
+EnvironmentFile=/home/c3fl/busrader-flensburg/.env
+ExecStart=/home/c3fl/busrader-flensburg/venv/bin/uvicorn \
+        --proxy-headers \
+        --forwarded-allow-ips='*' \
+        --workers=4 \
+        --port=8000 \
+        main:app
+
+ExecReload=/bin/kill -HUP ${MAINPID}
+RestartSec=1
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
 ```
 
 
